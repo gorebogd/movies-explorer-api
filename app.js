@@ -9,6 +9,7 @@ const { PORT, MONGO_URL } = require('./config');
 
 const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { limiter } = require('./middlewares/limiter');
 
 const routes = require('./routes');
 
@@ -30,6 +31,7 @@ app.use(routes);
 
 app.use(requestLogger);
 app.use(errorLogger);
+app.use(limiter);
 app.use(errors());
 
 app.use(errorHandler);
