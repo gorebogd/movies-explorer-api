@@ -1,5 +1,7 @@
 # movies-explorer-api
 
+https://api.gorebogd.nomoredomains.club/
+
 ## Запуск проекта
 
 `npm run start` — запускает сервер
@@ -21,3 +23,5 @@ POST /movies
 
 ### удаляет сохранённый фильм по _id
 DELETE /movies/movieId
+
+
