@@ -64,7 +64,7 @@ const createUser = (req, res, next) => {
       }))
       .then((newUser) => {
         if (!newUser) {
-          throw new NotFoundError('Неправильно переданы данные.');
+          throw new BadRequestError('Неправильно переданы данные.');
         } else {
           res.send({
             email: newUser.email,
