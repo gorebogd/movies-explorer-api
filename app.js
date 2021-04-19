@@ -15,6 +15,8 @@ const routes = require('./routes');
 
 const app = express();
 
+app.use(requestLogger);
+
 mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -23,15 +25,14 @@ mongoose.connect(MONGO_URL, {
 });
 
 app.use(cors());
+app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(routes);
 
-app.use(requestLogger);
 app.use(errorLogger);
-app.use(limiter);
 app.use(errors());
 
 app.use(errorHandler);

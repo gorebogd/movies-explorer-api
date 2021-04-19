@@ -56,6 +56,7 @@ const movieSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: [true, 'Поле owner обязательно к заполнению.'],
     ref: 'user',
+    select: false,
   },
   movieId: {
     type: Number,

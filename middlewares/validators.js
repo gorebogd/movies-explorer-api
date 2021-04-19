@@ -8,7 +8,7 @@ const userCreateValidator = celebrate({
         'any.required': 'Поле email обязательно.',
         'string.email': 'Неверный формат email.',
       }),
-    password: Joi.string().required().min(8)
+    password: Joi.string().required()
       .messages({
         'any.required': 'Поле password обязательно.',
         'string.min': 'Минимальная длина пароля 8 символов.',
@@ -19,7 +19,7 @@ const userCreateValidator = celebrate({
         'string.min': 'Минимальная длина имени 2 символа.',
         'string.max': 'Максимальная длина имени 30 символов.',
       }),
-  }).unknown(true),
+  }),
 });
 
 const userUpdateValidator = celebrate({
@@ -33,7 +33,7 @@ const userUpdateValidator = celebrate({
       .messages({
         'string.email': 'Неверный формат email.',
       }),
-  }).unknown(true),
+  }),
 });
 
 const userSignInValidator = celebrate({
@@ -48,7 +48,7 @@ const userSignInValidator = celebrate({
         'any.required': 'Поле  password обязательно.',
         'string.min': 'Минимальная длина пароля 8 символов.',
       }),
-  }).unknown(true),
+  }),
 });
 
 const movieBodyValidator = celebrate({
@@ -112,14 +112,14 @@ const movieBodyValidator = celebrate({
       .messages({
         'any.required': 'Поле nameEN обязательно.',
       }),
-  }).unknown(true),
+  }),
 });
 
 const movieIdValidator = celebrate({
   params: Joi.object().keys({
     movieId: Joi.string().alphanum().length(24).hex()
       .message('Передан невалидный id.'),
-  }).unknown(true),
+  }),
 });
 
 module.exports = {
