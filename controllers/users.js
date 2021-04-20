@@ -58,9 +58,10 @@ const createUser = (req, res, next) => {
           throw new BadRequestError('Ошибка валидации. Введены некорректные данные.');
         } else if (err.code === 11000) {
           throw new UniqueError('Есть пользователь с тамим email.');
+        } else {
+          next(err);
         }
-      })
-      .catch(next);
+      });
   });
 };
 
