@@ -5,7 +5,6 @@ const BadRequestError = require('../errors/BadRequestError');
 
 const getUserMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
-    .orFail(() => new NotFoundError('Нет фильмов в избранном.'))
     .then((movie) => {
       res.send(movie);
     })
@@ -15,13 +14,25 @@ const getUserMovies = (req, res, next) => {
 const addMovie = (req, res, next) => {
   const { _id } = req.user;
   Movie.create({ ...req.body, owner: _id })
-    .then((movie) => res.send(movie))
+    .then((movie) => res.send({
+      country: movie.country,
+      director: movie.director,
+      duration: movie.duration,
+      year: movie.year,
+      description: movie.description,
+      image: movie.image,
+      trailer: movie.trailer,
+      thumbnail: movie.thumbnail,
+      movieId: movie.movieId,
+      nameRU: movie.nameRU,
+      nameEN: movie.nameEN,
+    }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Введены некорректные данные');
+        next(new BadRequestError('Введены некорректные данные'));
       }
-    })
-    .catch(next);
+      next(err);
+    });
 };
 
 const removeMovie = (req, res, next) => {
@@ -33,7 +44,7 @@ const removeMovie = (req, res, next) => {
         throw new ForbiddenError('Вы не можете удалять фильмы других пользователей.');
       }
       return Movie.findByIdAndRemove(movieId)
-        .then(() => res.send('Фильм ыбыл успешно удален'));
+        .then((m) => res.send(m));
     })
     .catch(next);
 };

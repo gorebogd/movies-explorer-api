@@ -42,55 +42,47 @@ const getUser = (req, res, next) => {
     .catch((err) => {
       if (err.kind === 'ObjectId') {
         next(new AuthError('Неверно введен id.'));
+      } else {
+        next(err);
       }
-      next(err);
     });
 };
 
 const createUser = (req, res, next) => {
-  const {
-    email,
-    password,
-    name,
-  } = req.body;
-  if (req.body.password.length < 8) {
-    throw new BadRequestError('Длина пароля менее 8 символов.');
-  } else {
-    bcrypt.hash(password, 10)
-      .then((hash) => User.create({
-        email,
-        password: hash,
-        name,
-      }))
-      .then((newUser) => {
-        if (!newUser) {
-          throw new BadRequestError('Неправильно переданы данные.');
-        } else {
-          res.send({
-            email: newUser.email,
-            name: newUser.name,
-          });
-        }
-      })
+  const { name, email, password } = req.body;
+  bcrypt.hash(password, 10).then((hash) => {
+    User.create({ name, email, password: hash })
+      .then((user) => res.send({ name: user.name, email: user.email }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
-          next(new BadRequestError('Ошибка валидации. Введены некорректные данные.'));
-        } else if (err.code === 11000 || err.name === 'MongoError') {
-          next(new UniqueError('Есть пользователь с тамим email.'));
+          throw new BadRequestError('Ошибка валидации. Введены некорректные данные.');
+        } else if (err.code === 11000) {
+          throw new UniqueError('Есть пользователь с тамим email.');
         }
-        next(err);
-      });
-  }
+      })
+      .catch(next);
+  });
 };
 
 const updateUser = (req, res, next) => {
   const { name, email } = req.body;
-  User.findByIdAndUpdate(req.user._id, { email, name }, { new: true })
+  User.findByIdAndUpdate(req.user._id, { email, name }, {
+    new: true,
+    runValidators: true,
+    upsert: true,
+  })
     .then((user) => {
       if (!user) {
         throw new NotFoundError('Нет пользователя с таким id.');
       } else {
         res.status(200).send({ email: user.email, name: user.name });
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new BadRequestError('Ошибка валидации. Введены некорректные данные.');
+      } else if (err.code === 11000) {
+        throw new UniqueError('Есть пользователь с тамим email.');
       }
     })
     .catch(next);

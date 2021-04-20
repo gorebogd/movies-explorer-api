@@ -29,7 +29,7 @@ const userUpdateValidator = celebrate({
         'string.min': 'Минимальная длина имени 2 символа.',
         'string.max': 'Максимальная длина имени 30 символов.',
       }),
-    email: Joi.string().email()
+    email: Joi.string().required().email()
       .messages({
         'string.email': 'Неверный формат email.',
       }),
@@ -43,10 +43,9 @@ const userSignInValidator = celebrate({
         'any.required': 'Поле email обязательно.',
         'string.email': 'Неверный формат email.',
       }),
-    password: Joi.string().required().min(8)
+    password: Joi.string().required()
       .messages({
         'any.required': 'Поле  password обязательно.',
-        'string.min': 'Минимальная длина пароля 8 символов.',
       }),
   }),
 });
