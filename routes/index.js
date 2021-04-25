@@ -8,6 +8,7 @@ const { userCreateValidator, userSignInValidator } = require('../middlewares/val
 const NotFoundError = require('../errors/NotFoundError');
 
 const { createUser, login } = require('../controllers/users');
+const { NOT_FOUND_MESSAGE } = require('../utils/constants');
 
 router.all('/', auth);
 
@@ -18,7 +19,7 @@ router.use('/users', auth, usersRouter);
 router.use('/movies', auth, movieRouter);
 
 router.all('*', () => {
-  throw new NotFoundError('Запрашиваемый ресурс не найден.');
+  throw new NotFoundError(NOT_FOUND_MESSAGE);
 });
 
 module.exports = router;
