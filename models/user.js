@@ -2,30 +2,30 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const AuthError = require('../errors/AuthError');
-const { WRONG_CREDENTIALS_MESSAGE } = require('../utils/constants');
+const { WRONG_CREDENTIALS_MESSAGE, INVALID_EMAIL } = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: [true, 'Поле E-mail обязательно к заполнению.'],
+    required: true,
     unique: true,
     validate: {
       validator(v) {
         return validator.isEmail(v);
       },
-      message: 'Введен неверный формат email',
+      message: INVALID_EMAIL,
     },
   },
   password: {
     type: String,
-    required: [true, 'Поле Пароль обязательно к заполнению.'],
+    required: true,
     select: false,
   },
   name: {
     type: String,
-    required: [true, 'Поле Имя обязательно к заполнению.'],
-    minlength: [2, 'Минимальная длина имени 2 символа.'],
-    maxlength: [30, 'Максимальная длина имени 30 символов.'],
+    required: true,
+    minlength: 2,
+    maxlength: 30,
   },
 });
 
